@@ -135,7 +135,7 @@ This seed project is good for starting up with any Angular-Flask-Docker project,
 
 - All Flask/Python unit tests resides inside the `server/tests` directory and managed by `manage .py` Python file.
 - Run the sample tests using following command:
-  - `docker-compose -f docker-compose.yml run --rm flask_demo python manage.py test`
+  - `docker-compose -f docker-compose.yml run --rm flask python manage.py test`
 
 ### References/Credits
 
