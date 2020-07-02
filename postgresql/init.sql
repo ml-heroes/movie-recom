@@ -1,1 +1,1 @@
-CREATE DATABASE users_dev;
+CREATE DATABASE ml_dev;

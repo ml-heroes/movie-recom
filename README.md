@@ -1,4 +1,3 @@
-Starter Project From: https://github.com/mrsan22/Angular-Flask-Docker-Skeleton
 # Angular-Flask-Docker-Skeleton v2.0.3
 
 ### Simple Angular-Flask-PostgreSQL seed project with Docker.
@@ -144,3 +143,5 @@ I refered a lot of online blogs, github repos and stackoverflow questions, while
 
 - [Digital Ocean](https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-14-04)
 - [Patrick Software Blog](http://www.patricksoftwareblog.com/how-to-use-docker-and-docker-compose-to-create-a-flask-application/)
+
+Starter Project From: https://github.com/mrsan22/Angular-Flask-Docker-Skeleton

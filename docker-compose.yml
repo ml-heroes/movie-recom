@@ -5,8 +5,8 @@
 version: '2'
 
 services:
-  nginx_demo:
-    container_name: nginx_demo_container
+  nginx:
+    container_name: nginx_container
     restart: always
     image: nginx
     build:
@@ -18,10 +18,10 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - flask_demo
+      - flask
 
-  flask_demo:
-    container_name: flask_demo_container
+  flask:
+    container_name: flask_container
     restart: always
     image: flask
     build: ./server
@@ -31,14 +31,14 @@ services:
      - .env
 
   data:
-   container_name: app_data_demo_container
+   container_name: app_data_container
    image: postgres:9.6
    volumes:
      - /var/lib/postgresql
    command: "true"
 
   postgres:
-   container_name: postgresql_demo_container
+   container_name: postgresql_container
    restart: always
    build: ./postgresql
    volumes_from:
