@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
-import { getMovieRows } from '../getMovie';
-import { fetchDocumentaries } from '../store/actions/index';
+import { getMovieRows } from "../getMovie";
+import { fetchDocumentaries } from "../store/actions/index";
 
 class Documentaries extends Component {
-  componentWillMount() {
-    this.props.fetchDocumentaries();
+  constructor(props) {
+    super(props);
+    fetchDocumentaries();
   }
 
   render() {

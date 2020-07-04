@@ -6,8 +6,9 @@ import { fetchActionMovies } from '../store/actions/index';
 import { getMovieRows } from '../getMovie';
 
 class ActionMovies extends Component {
-  componentWillMount() {
-    this.props.fetchActionMovies();
+  constructor(props) {
+    super(props)
+    props.fetchActionMovies();
   }
 
   render() {

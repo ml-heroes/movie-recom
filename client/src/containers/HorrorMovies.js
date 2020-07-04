@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
-import { getMovieRows } from '../getMovie';
-import { fetchHorrorMovies } from '../store/actions/index';
+import { getMovieRows } from "../getMovie";
+import { fetchHorrorMovies } from "../store/actions/index";
 
 class HorrorMovies extends Component {
-  componentWillMount() {
-    this.props.fetchHorrorMovies();
+  constructor(props) {
+    super(props);
+    props.fetchHorrorMovies();
   }
 
   render() {

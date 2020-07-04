@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
-import { fetchTopRated } from '../store/actions/index';
-import { getMovieRows } from '../getMovie';
+import { fetchTopRated } from "../store/actions/index";
+import { getMovieRows } from "../getMovie";
 
 class TopRated extends Component {
-  componentWillMount() {
-    this.props.fetchTopRated();
+  constructor(props) {
+    super(props)
+    props.fetchTopRated();
   }
 
   render() {

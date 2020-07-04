@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
-import { fetchTrending } from '../store/actions/index';
-import { getMovieRows } from '../getMovie';
+import { fetchTrending } from "../store/actions/index";
+import { getMovieRows } from "../getMovie";
 
 class TrendingMovies extends Component {
-  componentWillMount() {
-    this.props.fetchTrending();
+  constructor(props) {
+    super(props);
+    props.fetchTrending();
   }
 
   render() {

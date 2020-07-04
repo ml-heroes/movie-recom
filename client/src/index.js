@@ -1,29 +1,32 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import reducers from './store/reducers';
-import promise from 'redux-promise';
-
-import App from './containers/App';
-// Import main sass file to apply global styles
-import './static/sass/style.scss';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./static/sass/style.scss";
+import App from "./App";
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import * as serviceWorker from "./serviceWorker";
+import reducers from "./store/reducers";
+import promise from "redux-promise";
+import { BrowserRouter } from "react-router-dom";
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 
-// TODO
-// - fix styling issue
-// - implemented debouncing
-// - implement carousel
-// - fix modal backdrop bug
-// - add routing and 404 page
 const app = (
+  // <React.StrictMode>
   <Provider store={createStoreWithMiddleware(reducers)}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
   </Provider>
+  // </React.StrictMode>
 );
 
-ReactDOM.render(app, document.getElementById('app'));
+ReactDOM.render(
+  app,
+  document.getElementById("root")
+);
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();

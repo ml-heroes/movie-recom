@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
-import Aux from '../../hoc/Aux';
-import AddIcon from '../../static/images/add.svg';
-import PlayIcon from '../../static/images/play-button.svg';
+import { ReactComponent as AddIcon } from '../../static/images/add.svg';
+import { ReactComponent as PlayIcon } from '../../static/images/play-button.svg';
 
 export default function MovieDetails(props) {
   return (
-    <Aux>
+    <Fragment>
       <div className="modal__container">
         <h1 className="modal__title">
           {props.movie.title || props.movie.name}
@@ -36,6 +35,6 @@ export default function MovieDetails(props) {
           My List
         </button>
       </div>
-    </Aux>
+    </Fragment>
   );
 }

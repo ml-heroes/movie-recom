@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
-import { getMovieRows } from '../getMovie';
-import { fetchRomanceMovies } from '../store/actions/index';
+import { getMovieRows } from "../getMovie";
+import { fetchRomanceMovies } from "../store/actions/index";
 
 class RomanceMovies extends Component {
-  componentWillMount() {
-    this.props.fetchRomanceMovies();
+  constructor(props) {
+    super(props)
+    props.fetchRomanceMovies();
   }
 
   render() {

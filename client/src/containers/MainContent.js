@@ -15,13 +15,12 @@ class MainContent extends Component {
 
   state = {
     /** Will hold our chosen movie to display on the header */
-    selectedMovie: {}
+    selectedMovie: {},
   };
 
   componentDidMount = () => {
     this.getMovie();
   };
-
 
   getMovie = () => {
     /** Movie Id for the Narcos series  */
@@ -30,11 +29,11 @@ class MainContent extends Component {
     const url = `https://api.themoviedb.org/3/tv/${movieId}?api_key=${process.env.API_KEY}`;
     axios
       .get(url)
-      .then(res => {
+      .then((res) => {
         const movieData = res.data;
         this.setState({ selectedMovie: movieData });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };

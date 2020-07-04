@@ -1,7 +1,7 @@
 import React from 'react';
 
-import PlayLogo from '../static/images/play-button.svg';
-import AddLogo from '../static/images/add.svg';
+import { ReactComponent as PlayLogo } from '../static/images/play-button.svg';
+import { ReactComponent as AddLogo } from '../static/images/add.svg';
 
 export default function Header(props) {
   const backgroundStyle = {

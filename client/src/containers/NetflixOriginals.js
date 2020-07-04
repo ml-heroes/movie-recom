@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
-import { getMovieRows } from '../getMovie';
-import { fetchNetflixOriginals } from '../store/actions/index';
+import { getMovieRows } from "../getMovie";
+import { fetchNetflixOriginals } from "../store/actions/index";
 
 class NetflixOriginals extends Component {
-  componentWillMount() {
-    this.props.fetchNetflixOriginals();
+  constructor(props) {
+    super(props);
+    props.fetchNetflixOriginals();
   }
 
   render() {

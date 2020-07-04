@@ -18,14 +18,15 @@ class Layout extends Component {
     toggleModal: false,
     /** Holds the movie information for a single movie. */
     movieOverview: {},
-  }
+  };
 
   /** Make API call as soon as the user starts typing.  */
   makeAipCall = (searchItem) => {
     const url = `/search/multi?api_key=${process.env.API_KEY}&language=en-US&include_adult=false&query=${searchItem}`;
 
-    axios.get(url)
-      .then(res => {
+    axios
+      .get(url)
+      .then((res) => {
         const results = res.data.results;
         let movieImageUrl;
         /** Will hold all our movies Components */
@@ -35,31 +36,36 @@ class Layout extends Component {
         results.forEach((movie) => {
           /** Manually build our image url and set it on the Movie component. */
           if (movie.poster_path !== null && movie.media_type !== "person") {
-            movieImageUrl = "https://image.tmdb.org/t/p/w500" + movie.poster_path;
+            movieImageUrl =
+              "https://image.tmdb.org/t/p/w500" + movie.poster_path;
 
             /** Set the movie object to our Movie component */
-            const movieComponent = <Movie
-              movieDetails={() => this.selectMovieHandler(movie)}
-              key={movie.id}
-              movieImage={movieImageUrl}
-              movie={movie} />
+            const movieComponent = (
+              <Movie
+                movieDetails={() => this.selectMovieHandler(movie)}
+                key={movie.id}
+                movieImage={movieImageUrl}
+                movie={movie}
+              />
+            );
 
             /** Push our movie component to our movieRows array */
             movieRows.push(movieComponent);
           }
-        })
+        });
         /** Set our MovieList array to the movieRows array */
         this.setState({ MovieList: movieRows });
-      }).catch(error => {
+      })
+      .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   /** Get the user input  */
   onSearchHandler = (event) => {
     /** Display the movie list. */
     this.setState({
-      toggleMovieList: false
+      toggleMovieList: false,
     });
 
     const userInput = event.target.value;
@@ -69,10 +75,10 @@ class Layout extends Component {
     /** If the input is empty don't display the movie list. */
     if (userInput === "") {
       this.setState({
-        toggleMovieList: true
+        toggleMovieList: true,
       });
     }
-  }
+  };
 
   /* Get the appropriate details for a specific movie that was clicked */
   selectMovieHandler = (movie) => {
@@ -83,47 +89,46 @@ class Layout extends Component {
     if (movie.media_type === "movie") {
       const movieId = movie.id;
       url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${process.env.API_KEY}`;
-
     } else if (movie.media_type === "tv") {
-      const tvId = movie.id
+      const tvId = movie.id;
       url = `https://api.themoviedb.org/3/tv/${tvId}?api_key=${process.env.API_KEY}`;
     }
 
-    axios.get(url)
-      .then(res => {
+    axios
+      .get(url)
+      .then((res) => {
         const movieData = res.data;
 
         this.setState({ movieOverview: movieData });
-      }).catch(error => {
+      })
+      .catch((error) => {
         console.log(error);
       });
-
-  }
+  };
 
   closeModal = () => {
     this.setState({ toggleModal: false });
-  }
+  };
 
   render() {
-
     return (
       <div>
         <Navbar showMovies={this.onSearchHandler} />
-        {
-          this.state.toggleMovieList ? <MainContent /> : <div
-            className="search-container">{this.state.MovieList}</div>
-        }
-        <Modal show={this.state.toggleModal}
+        {this.state.toggleMovieList ? (
+          <MainContent />
+        ) : (
+          <div className="search-container">{this.state.MovieList}</div>
+        )}
+        <Modal
+          show={this.state.toggleModal}
           modalClosed={this.closeModal}
-          movie={this.state.movieOverview}>
-
+          movie={this.state.movieOverview}
+        >
           <MovieDetails movie={this.state.movieOverview} />
         </Modal>
       </div>
-
     );
   }
-
 }
 
 export default Layout; 

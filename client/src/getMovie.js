@@ -24,6 +24,7 @@ export function getMovieRows(movies, url) {
 
       return movieComponent;
     }
+    return null;
   });
 
   return movieRow;
