@@ -13,7 +13,7 @@ services:
       context: .
       dockerfile: nginx/Dockerfile
     volumes:
-     - ./client/dist:/usr/share/nginx/html
+     - ./client/build:/usr/share/nginx/html
     ports:
       - "80:80"
       - "443:443"

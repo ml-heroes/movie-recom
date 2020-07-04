@@ -148,3 +148,4 @@ I refered a lot of online blogs, github repos and stackoverflow questions, while
 - [Patrick Software Blog](http://www.patricksoftwareblog.com/how-to-use-docker-and-docker-compose-to-create-a-flask-application/)
 
 Starter Project From: https://github.com/mrsan22/Angular-Flask-Docker-Skeleton
+UI Starter Project From: https://github.com/AndresXI/Netflix-Clone
