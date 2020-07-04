@@ -1,11 +1,11 @@
 # 
 [Colab Jupyter Notebook](https://colab.research.google.com/github/ml-heroes/movie-recom/blob/master/ml/movie-recom.ipynb)
 
-# Angular-Flask-Docker-Skeleton v2.0.3
+# React-Flask-Docker Project
 
-### Simple Angular-Flask-PostgreSQL seed project with Docker.
+### Recommended System with Machine Learning React-Flask-PostgreSQL project with Docker.
 
-This is a simple Angular-Flask web application skeleton project with following key
+This is a simple React-Flask web application skeleton project with following key
 features:
 
 - The project structure supports multiple development environments with the usage of `.env`
@@ -22,7 +22,7 @@ features:
 
 It is built with following components:
 
-- Angular (v9) - Frontend framework.
+- React - Frontend framework.
 - Flask(1.1.2) - Micro web framework (Python-3.6.2) for the backend.
 - PostgreSQL - Database support.
 - Flask-SQLAlchemy - Flask based ORM wrapper on SQLAlchemy.
@@ -39,7 +39,7 @@ It is built with following components:
 
 ### client
 
-This directory holds the Angular code.
+This directory holds the React code.
 
 ### nginx
 
@@ -97,7 +97,7 @@ talks to the PostgreSQL database on port 5432 for any request that require datab
 Prerequisites [here](https://github.com/angular/angular-cli#prerequisites).
 
 - Clone this repository
-- **Not Required** - Navigate to client directory and execute `ng build --prod` to create production build for Angular.
+- **Not Required** - Navigate to client directory and execute `yarn build` to create production build for Angular.
 - Then navigate back and execute following commands:
   - `docker-compose build`
   - `docker-compose up`
