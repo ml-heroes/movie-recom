@@ -1,5 +1,5 @@
 # 
-[Colab Jupyter Notebook](https://colab.research.google.com/github/clintonyeb/movie-recom/blob/master/ml/movie-recom.ipynb)
+[Colab Jupyter Notebook](https://colab.research.google.com/github/ml-heroes/movie-recom/blob/master/ml/movie-recom.ipynb)
 
 # Angular-Flask-Docker-Skeleton v2.0.3
 
