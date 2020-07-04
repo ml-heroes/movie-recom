@@ -2,7 +2,7 @@
 
 cd client
 npm install
-ng build --prod
+yarn build
 cd ..
 docker-compose build
 docker-compose up
