@@ -1,77 +1,95 @@
-from os import path
+import random
 from ast import literal_eval
 import pandas as pd
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel
-
-DS_PATH = 'https://raw.githubusercontent.com/ml-heroes/ml-dataset/master/movies/'
-LOCAL_DS_PATH = 'data'
-
-md = pd.read_csv(path.join(DS_PATH, 'movies_metadata.csv'))
-links = pd.read_csv(path.join(DS_PATH, 'links_small.csv'))
-credits = pd.read_csv(path.join(LOCAL_DS_PATH, 'credits.csv'))
-keywords = pd.read_csv(path.join(DS_PATH, 'keywords.csv'))
-
-# The following three movies' records are corrupted
-md = md.drop([19730, 29503, 35587])
-
-md['id'] = md['id'].astype('int')
-links = links[links['tmdbId'].notnull()]['tmdbId'].astype('int')
-keywords['id'] = keywords['id'].astype('int')
-credits['id'] = credits['id'].astype('int')
-
-smd = md[md['id'].isin(links)]
-smd = smd.merge(credits, on='id')
-smd = smd.merge(keywords, on='id')
-
-smd['tagline'] = smd['tagline'].fillna('')
-smd['description'] = smd['overview'] + smd['tagline']
-smd['description'] = smd['description'].fillna('')
-
-tf = TfidfVectorizer(analyzer='word', ngram_range=(1, 2),
-                     min_df=0, stop_words='english')
-tfidf_matrix = tf.fit_transform(smd['description'])
-
-cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
-
-smd = smd.reset_index()
-titles = smd['title']
-indices = pd.Series(smd.index, index=smd['title'])
+from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
+from nltk.stem.snowball import SnowballStemmer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
 
-def get_recommendations(title):
-    idx = indices[title]
-    sim_scores = list(enumerate(cosine_sim[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    sim_scores = sim_scores[1:31]
-    movie_indices = [i[0] for i in sim_scores]
-    return titles.iloc[movie_indices]
+class ContentRecommender:
+    def __init__(self, content_ds):
+        self.cos_sim_desc = create_cosine_sim_desc(content_ds)
+        self.cos_sim_kwd = create_cosine_sim_kwd(content_ds)
+        self.cos_sim_dir_cast = create_cosine_sim_dir_cast(content_ds)
+        self.cos_sim_genre = create_cosine_sim_genre(content_ds)
+        cds = content_ds.reset_index()
+        self.titles = csd['title']
+        self.indices = pd.Series(cds.index, index=cds['title'])
 
+    def create_cosine_sim_desc(content_ds):
+        content_ds['tagline'] = content_ds['tagline'].fillna('')
+        content_ds['description'] = content_ds['overview'] + content_ds['tagline']
+        content_ds['description'] = content_ds['description'].fillna('')
+        tf_vect = TfidfVectorizer(analyzer='word', ngram_range=(1, 2), min_df=0, stop_words='english')
+        tfidf_matrix_desc = tf_vect.fit_transform(content_ds['description'])
+        return cosine_similarity(tfidf_matrix_desc, tfidf_matrix_desc)
 
-smd['cast'] = smd['cast'].apply(literal_eval)
-smd['crew'] = smd['crew'].apply(literal_eval)
-smd['keywords'] = smd['keywords'].apply(literal_eval)
-smd['cast_size'] = smd['cast'].apply(lambda x: len(x))
-smd['crew_size'] = smd['crew'].apply(lambda x: len(x))
+    def filter_keywords(x):
+        words = []
+        for i in x:
+            if i in s:
+                words.append(i)
+        return words
 
+    def create_cosine_sim_kwd(content_ds):
+        content_ds['keywords'] = content_ds['keywords'].apply(literal_eval)
+        content_ds['keywords'] = content_ds['keywords'].apply(
+            lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
+        s = content_ds.apply(lambda x: pd.Series(x['keywords']), axis=1).stack().reset_index(level=1, drop=True)
+        #s.name = 'keyword'
+        s = s.value_counts()
+        s = s[s > 1]
+        content_ds['keywords'] = content_ds['keywords'].apply(filter_keywords)
+        stemmer = SnowballStemmer('english')
+        content_ds['keywords'] = content_ds['keywords'].apply(lambda x: [stemmer.stem(i) for i in x])
+        content_ds['keywords'] = content_ds['keywords'].apply(lambda x: [str.lower(i.replace(" ", "")) for i in x])
+        content_ds['keywords'] = content_ds['keywords'].apply(lambda x: ' '.join(x))
+        count_vect = CountVectorizer(analyzer='word', ngram_range=(1, 2), min_df=0, stop_words='english')
+        count_matrix_kwd = count_vect.fit_transform(content_ds['keywords'])
+        return cosine_similarity(count_matrix_kwd, count_matrix_kwd)
 
-def get_director(x):
-    for i in x:
-        if i['job'] == 'Director':
-            return i['name']
-    return np.nan
+    def get_director(x):
+        for i in x:
+            if i['job'] == 'Director':
+                return i['name']
+        return np.nan
 
+    def create_cosine_sim_dir_cast(content_ds):
+        content_ds['cast'] = content_ds['cast'].apply(literal_eval)
+        content_ds['crew'] = content_ds['crew'].apply(literal_eval)
+        #content_ds['cast_size'] = content_ds['cast'].apply(lambda x: len(x))
+        #content_ds['crew_size'] = content_ds['crew'].apply(lambda x: len(x))
+        content_ds['director'] = content_ds['crew'].apply(get_director)
+        content_ds['director'] = content_ds['director'].astype('str').apply(lambda x: str.lower(x.replace(" ", "")))
+        #content_ds['director'] = content_ds['director'].apply(lambda x: [x, x, x])
+        content_ds['cast'] = content_ds['cast'].apply(lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
+        content_ds['cast'] = content_ds['cast'].apply(lambda x: x[:3] if len(x) >= 3 else x)
+        content_ds['cast'] = content_ds['cast'].apply(lambda x: [str.lower(i.replace(" ", "")) for i in x])
+        content_ds['dirast'] = content_ds['director'] + content_ds['cast'].apply(lambda x: ' '.join(x))
+        content_ds['dirast'] = content_ds['dirast'].apply(lambda x: ' '.join(x))
+        count_matrix_dirast = count_vect.fit_transform(content_ds['dirast'])
+        return cosine_similarity(count_matrix_dirast, count_matrix_dirast)
 
-smd['director'] = smd['crew'].apply(get_director)
+    def create_cosine_sim_genre(content_ds):
+        content_ds['genres'] = content_ds['genres'].apply(literal_eval)
+        content_ds['genres'] = content_ds['genres'].apply(
+            lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
+        count_matrix_gnr = count_vect.fit_transform(content_ds['genres'])
+        return cosine_similarity(count_matrix_gnr, count_matrix_gnr)
 
-smd['cast'] = smd['cast'].apply(lambda x: [i['name']
-                                           for i in x] if isinstance(x, list) else [])
+    def get_sim_mov_tiles(title, num, sim_mat):
+        idx = self.indices[title]
+        sim_scores = list(enumerate(sim_mat[idx]))
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        sim_scores = sim_scores[1:num]
+        movie_indices = [i[0] for i in sim_scores]
+        return self.titles.iloc[movie_indices]
 
-smd['cast'] = smd['cast'].apply(lambda x: x[:3] if len(x) >= 3 else x)
-
-smd['keywords'] = smd['keywords'].apply(
-    lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
-
-
-get_recommendations('The Social Network').head(10)
+    def recommend(title, num):
+        sim_titles = set()
+        sim_titles.update(get_sim_mov_tiles(title, num, self.cos_sim_desc))
+        sim_titles.update(get_sim_mov_tiles(title, num, self.cos_sim_kwd))
+        sim_titles.update(get_sim_mov_tiles(title, num, self.cos_sim_dir_cast))
+        sim_titles.update(get_sim_mov_tiles(title, num, self.cos_sim_genre))
+        return random.shuffle(list(sim_titles))
