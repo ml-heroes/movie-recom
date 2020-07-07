@@ -85,6 +85,9 @@ class ContentRecommender:
     def get_sim_mov_tiles(self, title, num, sim_mat):
         idx = self.indices[str.lower(title.replace(" ", ""))]
         movies_scores = sim_mat[idx]
+        if len(movies_scores.shape) == 1:
+            movies_scores = np.reshape(movies_scores, (1, -1))
+        print(movies_scores.shape)
         movies_indices = []
         for i in range(movies_scores.shape[0]):
             sim_scores = list(enumerate(movies_scores[i]))
