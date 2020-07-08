@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 DS_PATH = 'https://raw.githubusercontent.com/ml-heroes/ml-dataset/master/movies/'
-LOCAL_DS_PATH = '.'
+LOCAL_DS_PATH = 'data'
 
 
 def retrieve_datasets():
