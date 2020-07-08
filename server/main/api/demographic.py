@@ -4,7 +4,7 @@
 from flask import Blueprint, jsonify
 import os
 from server.main.services.demographic_service import DemographicService
-from server.model.demo.preprocess import Process
+from server.models.demo.preprocess import Process
 
 route = Blueprint('demographic', __name__)
 
