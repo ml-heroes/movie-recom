@@ -4,14 +4,14 @@
 from flask import Blueprint, jsonify
 import os
 from server.main.services.demographic_service import DemographicService
-from server.models.demo.preprocess import Process
+from server.models.prep.preprocess import Process
 
 route = Blueprint('demographic', __name__)
 
-print("===Loading data into memory===")
-processed_data = Process('https://raw.githubusercontent.com/ml-heroes/ml-dataset/master/movies/movies_metadata.csv')
-demographic_service = DemographicService(processed_data.df)
-print("===Loading data complete===")
+base_path = 'https://raw.githubusercontent.com/ml-heroes/ml-dataset/master/movies/'
+large_base_path = 'https://dl.dropboxusercontent.com/s/toir5bjqhl463q4/'
+processed_data = Process(base_path, large_base_path)
+demographic_service = DemographicService(processed_data.metadata)
 
 @route.route("/api/movies/<movie_id>")
 def get_movie_detail(movie_id):

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 
-from server.models.content.preprocess import create_content_ds, retrieve_datasets
+from server.models.prep.preprocess import create_content_ds, retrieve_datasets
 from server.models.content.content_based_rec import ContentRecommender
 
 route = Blueprint('content', __name__)

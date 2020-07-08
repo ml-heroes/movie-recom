@@ -44,7 +44,6 @@ class Process:
         md['year'] = pd.to_datetime(md['release_date'], errors='coerce').apply(
             lambda x: str(x).split('-')[0] if x != np.nan else np.nan)
         md = md.drop('adult', axis=1)
-        base_poster_url = 'http://image.tmdb.org/t/p/w185/'
         md['poster_img'] = "<img src='" + base_poster_url + md['poster_path'] + "' style='height:100px;'>"
         md['title'] = md['title'].astype('str')
         md['overview'] = md['overview'].astype('str')
