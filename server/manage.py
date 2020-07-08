@@ -71,7 +71,7 @@ def seed_db():
     """Seed the user table in test_db database."""
     db.session.add(User(
         username='sanjiv',
-        email='mr.san.kumar@gmail.com',
+        email='clintonyeb@gmail.com',
         password='sanjiv'
     ))
     db.session.add(User(

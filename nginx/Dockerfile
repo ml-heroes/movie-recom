@@ -1,6 +1,6 @@
 FROM nginx:alpine
 
-MAINTAINER Sanjiv Kumar "mr.san.kumar@gmail.com"
+MAINTAINER Clinton Yeboah "clintonyeb@gmail.com"
 
 # Copy custom nginx config
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf

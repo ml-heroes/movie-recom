@@ -1,6 +1,10 @@
-FROM python:3.6.2
+FROM python:3.8.3
 
-MAINTAINER Sanjiv Kumar "mr.san.kumar@gmail.com"
+
+MAINTAINER Clinton Yeboah "clintonyeb@gmail.com"
+USER root
+
+RUN pip install --upgrade pip
 
 ENV PYTHONUNBUFFERED 1
 
@@ -11,7 +15,11 @@ WORKDIR /usr/src/app
 
 ADD requirements.txt /usr/src/app/requirements.txt
 # Install the Python libraries
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN mkdir -p /root/.surprise_data
+RUN chown -R root:root /root/.surprise_data/
+RUN chmod -R a+rwX /root/
 
 # copy everything from this directory to server/flask docker container
 COPY . /usr/src/app/

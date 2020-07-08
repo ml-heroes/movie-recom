@@ -3,7 +3,7 @@
 DemographicService class - This class holds the method related to Demographic manipulations.
 """
 
-from server.model.demo.demographics import (demographic_movies,
+from server.models.demo.demographics import (demographic_movies,
     weighted_rating_genre,
     likeable_movies,
     popular_movies)

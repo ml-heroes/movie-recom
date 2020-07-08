@@ -9,7 +9,7 @@ import os
 class Config(object):
     """ Common config options """
     APPNAME = 'Angular_Flask_Docker_Skeleton'
-    SUPPORT_EMAIL = 'mr.san.kumar@gmail.com'
+    SUPPORT_EMAIL = 'clintonyeb@gmail.com'
     VERSION = '2.0.1'
     APPID = 'fl_angular_docker'
     SECRET_KEY = os.urandom(24)

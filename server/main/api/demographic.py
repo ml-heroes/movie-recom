@@ -26,6 +26,6 @@ def get_popular():
 def get_likeable():
     return demographic_service.likeable().to_json(orient='records')
 
-@route.route("/api/trendings/<genre>")
+@route.route("/api/genres/<genre>")
 def get_genres(genre):
     return demographic_service.trending_genre(genre).to_json(orient='records')
