@@ -12,7 +12,7 @@ def weighted_rating(x, m, C):
 
 
 #  Convert the process into a function we can utilize later
-def demographic_movies(df, gen_md, recent=False, genre='', percentile=0.9, years=10):
+def demographic_movies(df, recent=False, percentile=0.9, years=10):
     # using a time range of the last 2 years
     if(recent == True):
         df['release_date'] = pd.to_datetime(df['release_date'])
@@ -20,9 +20,6 @@ def demographic_movies(df, gen_md, recent=False, genre='', percentile=0.9, years
         start_date = datetime.now() - relativedelta(years=years)
         mask = (df['release_date'] > start_date)
         df = df.loc[mask]
-
-    if(genre != ''):
-        df = gen_md[gen_md['genre'] == genre]
 
     vote_counts = df[df['vote_count'].notnull()]['vote_count'].astype('int')
     vote_averages = df[df['vote_average'].notnull()]['vote_average'].astype('int')
