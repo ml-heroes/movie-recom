@@ -1,5 +1,3 @@
-import pandas as pd
-import importlib
 from flask import Blueprint, jsonify
 
 from server.models.content.preprocess import preprocess
@@ -11,6 +9,6 @@ credits, keywords, links, links_small, metadata, ratings, ratings_small = prepro
 smd = preprocess.create_content_ds(metadata, links_small, keywords, credits)
 content_rec = ContentRecommender(smd)
 
-@route.route("/api/content/<title>/<movie_id>")
+@route.route("/api/contents/<title>/<movie_id>")
 def recommend_content(title, movie_id):
     return content_rec.recommend(title, movie_id).to_json(orient='records')
