@@ -11,3 +11,4 @@ numpy
 scikit-surprise
 scikit-learn
 nltk
+requests
