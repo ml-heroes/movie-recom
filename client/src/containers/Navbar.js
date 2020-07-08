@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
+import axios from 'axios';
 import NavigationItem from "../components/NavigationItem";
 import { ReactComponent as SearchLogo } from "../static/images/search-icon.svg";
 import NetflixLogo from "../static/images/Netflix_Logo_RGB.png";
@@ -6,34 +7,18 @@ import { ReactComponent as BellLogo } from "../static/images/bell-logo.svg";
 import { ReactComponent as DropdownArrow } from "../static/images/drop-down-arrow.svg";
 import DropdownContent from "../components/DropdownContent";
 
-class navigation extends Component {
+function Navigation(props){
+  const [scrolling, setScrolling] = useState(false);
 
-  state = {
-    scrolling: false,
-  };
-
-  componentDidMount() {
-    window.addEventListener("scroll", this.handleScroll);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
-  }
-
-  /** changes the scrolling state depending on the Y-position */
-  handleScroll = (event) => {
+  const handleScroll = (event) => {
     if (window.scrollY === 0) {
-      this.setState({ scrolling: false });
+      setScrolling(false);
     } else if (window.scrollY > 50) {
-      this.setState({ scrolling: true });
+      setScrolling(true);
     }
-  };
+  }
 
-  render() {
-    const { scrolling } = this.state;
-    const { showMovies } = this.props;
-
-    return (
+return(
       <nav className={"navigation " + (scrolling ? "black" : "")}>
         <ul className="navigation__container">
           <NavigationItem link="/" exact>
@@ -53,13 +38,16 @@ class navigation extends Component {
           <div className="navigation__container-link pseudo-link">My List</div>
 
           <div className="navigation__container--left">
-            <SearchLogo className="logo" />
 
             <input
-              onChange={showMovies}
+              onChange={props.inputChange}
               className="navigation__container--left__input"
               type="text"
-              placeholder="Title, genres, people" />
+              placeholder="Title" />
+
+              <button>
+                <SearchLogo onClick={props.showMovies} className="logo" />
+              </button>
 
           </div>
 
@@ -71,8 +59,57 @@ class navigation extends Component {
           <DropdownArrow className="navigation__container--downArrow" />
         </ul>
       </nav>
+)}
+
+
+
+
+
+
+/*class navigation extends Component {
+
+  state = {
+    scrolling: false,
+    title:""
+  };
+
+  componentDidMount() {
+    window.addEventListener("scroll", this.handleScroll);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  /** changes the scrolling state depending on the Y-position */
+  /*handleScroll = (event) => {
+    if (window.scrollY === 0) {
+      this.setState({ scrolling: false });
+    } else if (window.scrollY > 50) {
+      this.setState({ scrolling: true });
+    }
+  };
+
+
+
+  onTitleChange = (e) => {
+    const titleV = e.target.value
+    this.setState({title : titleV});
+  };
+
+  contentBased = (e)=>{
+      console.log("searched clicked")
+  };
+
+
+  render() {
+    const { scrolling } = this.state;
+    const { showMovies } = this.props;
+
+    return (
+
     );
   }
-}
+}*/
 
-export default navigation;
+export default Navigation;

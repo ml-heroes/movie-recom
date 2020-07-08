@@ -3,7 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 import { getMovieRows } from "../getMovie";
-import { fetchLikeable } from "../store/actions/index";
+import { fetchNetflixOriginals, fetchContentBased } from "../store/actions/index";
 
 class NetflixOriginals extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class NetflixOriginals extends Component {
     }
     return (
       <>
-        <h1 className="movieShowcase__heading">MOVIES YOU MAY LIKE</h1>
+        <h1 className="movieShowcase__heading">CONTENT BASED RECOMMENDATION</h1>
         <div className="movieShowcase__container">{movies}</div>
       </>
     );

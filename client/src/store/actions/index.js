@@ -30,6 +30,25 @@ export function fetchLikeable() {
   };
 }
 
+export async function fetchContentBased(title) {
+  const {data,status} = await axios.get(`/api/content/${title}`)
+  const payload = []
+  if(status == 200 && data != null){
+    Object.keys(data).map((k,i)=>{
+      payload.push({
+        id: k,
+        ...data[k]
+      })
+    })
+  }
+  return {
+    type: "FETCH_CONTENT",
+    payload: payload,
+  };
+}
+
+
+
 export function fetchTopRated() {
   const request = axios.get(`/collabs/top/${1}`);
 
