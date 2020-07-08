@@ -7,7 +7,7 @@ LOCAL_DS_PATH = 'server/models/content'
 
 
 def retrieve_datasets():
-    credits = pd.read_csv('https://file.io/cCFFWqrq')
+    credits = pd.read_csv('https://dl.dropboxusercontent.com/s/toir5bjqhl463q4/credits.csv')
     keywords = pd.read_csv(path.join(DS_PATH, 'keywords.csv'))
     links = pd.read_csv(path.join(DS_PATH, 'links.csv'))
     links_small = pd.read_csv(path.join(DS_PATH, 'links_small.csv'))
