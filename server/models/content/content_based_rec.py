@@ -56,9 +56,9 @@ class ContentRecommender:
 
     def recommend(self, title, num):
         sim_titles = set()
-        sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_genre))
         sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_desc))
         sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_kwd))
+        sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_genre))
         sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_dir_cast))
         sim_titles = list(sim_titles)
         return sim_titles
