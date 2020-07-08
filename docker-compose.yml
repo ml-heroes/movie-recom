@@ -27,6 +27,8 @@ services:
     build: ./server
     volumes:
     - ./server:/usr/src/app/server
+    - ./data:/usr/src/app/data
+    - ./ml:/usr/src/app/ml
     env_file:
      - .env
 

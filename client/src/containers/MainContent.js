@@ -56,4 +56,4 @@ class MainContent extends Component {
   }
 }
 
-export default MainContent; 
+export default MainContent;
