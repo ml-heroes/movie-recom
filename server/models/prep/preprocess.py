@@ -3,10 +3,12 @@ import ast
 from os import path
 import pandas as pd
 import numpy as np
+from ast import literal_eval
+from nltk.stem.snowball import SnowballStemmer
 
 
 class Process:
-    def __init__(self, ds_path, big_ds_path):
+    def __init__(self, ds_path, big_ds_path, base_poster_url):
         self.DS_PATH = ds_path
         self.BIG_DS_PATH = big_ds_path
         credits, keywords, links, links_small, metadata, ratings, ratings_small = self.retrieve_datasets()
@@ -14,7 +16,7 @@ class Process:
         self.keywords = self.process_keywords(keywords)
         self.links = self.process_links(links)
         self.links_small = self.process_links(links_small)
-        self.metadata = self.process_metadata(metadata)
+        self.metadata = self.process_metadata(metadata, base_poster_url)
         self.ratings = self.process_ratings(ratings)
         self.ratings_small = self.process_ratings(ratings_small)
 
@@ -29,7 +31,7 @@ class Process:
         ratings_small = pd.read_csv(path.join(self.DS_PATH, 'ratings_small.csv'))
         return credits, keywords, links, links_small, metadata, ratings, ratings_small
 
-    def process_metadata(self, md):
+    def process_metadata(self, md, base_poster_url):
         if md is None:
             return md
         
@@ -70,23 +72,64 @@ class Process:
         md['year'] = md['year'].replace('NaT', np.nan)
         md['year'] = md['year'].apply(self.clean_numeric)
 
-        md['genres'] = md['genres'].fillna('[]').apply(ast.literal_eval).apply(lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
-        s = md.apply(lambda x: pd.Series(x['genres']),axis=1).stack().reset_index(level=1, drop=True)
+        md['genres'] = md['genres'].fillna('[]').apply(ast.literal_eval).apply(
+            lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
+        s = md.apply(lambda x: pd.Series(x['genres']), axis=1).stack().reset_index(level=1, drop=True)
+        md['genres_vect'] = md['genres'].apply(lambda x: ' '.join(x))
         s.name = 'genres'
         md = md.drop('genres', axis=1).join(s)
 
+        md['tagline'] = md['tagline'].fillna('')
+        md['description'] = md['overview'] + md['tagline']
+        md['description'] = md['description'].fillna('')
+
         return md
+
+    def get_director(self, x):
+        for i in x:
+            if i['job'] == 'Director':
+                return i['name']
+        return np.nan
 
     def process_credits(self, crds):
         if crds is None:
             return crds
         crds['id'] = crds['id'].astype('int')
+        crds['cast'] = crds['cast'].apply(literal_eval)
+        crds['crew'] = crds['crew'].apply(literal_eval)
+        crds['cast_size'] = crds['cast'].apply(lambda x: len(x))
+        crds['crew_size'] = crds['crew'].apply(lambda x: len(x))
+        crds['director'] = crds['crew'].apply(self.get_director)
+        crds['director'] = crds['director'].astype('str').apply(lambda x: [str.lower(x.replace(" ", ""))])
+        crds['cast'] = crds['cast'].apply(lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
+        crds['cast'] = crds['cast'].apply(lambda x: x[:3] if len(x) >= 3 else x)
+        crds['cast'] = crds['cast'].apply(lambda x: [str.lower(i.replace(" ", "")) for i in x])
+        crds['dirast'] = crds['director'] + crds['cast']
+        crds['dirast'] = crds['dirast'].apply(lambda x: ' '.join(x))
         return crds
+
+    def filter_keywords(self, keywords, value_counts):
+        words = []
+        for i in keywords:
+            if i in value_counts:
+                words.append(i)
+        return words
 
     def process_keywords(self, kwds):
         if kwds is None:
             return kwds
         kwds['id'] = kwds['id'].astype('int')
+        kwds['keywords'] = kwds['keywords'].apply(literal_eval)
+        kwds['keywords'] = kwds['keywords'].apply(
+            lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
+        s = kwds.apply(lambda x: pd.Series(x['keywords']), axis=1).stack().reset_index(level=1, drop=True)
+        val_cnts = s.value_counts()
+        val_cnts = val_cnts[val_cnts > 1]
+        kwds['keywords'] = kwds['keywords'].apply(self.filter_keywords, args=(val_cnts,))
+        stemmer = SnowballStemmer('english')
+        kwds['keywords'] = kwds['keywords'].apply(lambda x: [stemmer.stem(i) for i in x])
+        kwds['keywords'] = kwds['keywords'].apply(lambda x: [str.lower(i.replace(" ", "")) for i in x])
+        kwds['keywords'] = kwds['keywords'].apply(lambda x: ' '.join(x))
         return kwds
 
     def process_links(self, lnks):
