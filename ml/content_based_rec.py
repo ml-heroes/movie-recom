@@ -83,12 +83,13 @@ class ContentRecommender:
         return cosine_similarity(count_matrix_gnr, count_matrix_gnr)
 
     def get_sim_mov_tiles(self, title, num, sim_mat):
-        idx = self.indices[str.lower(title.replace(" ", ""))]
+        idx = self.indices.get(str.lower(title.replace(" ", "")))
+        if idx == None:
+            return []
         movies_scores = sim_mat[idx]
+        movies_indices = []
         if len(movies_scores.shape) == 1:
             movies_scores = np.reshape(movies_scores, (1, -1))
-        print(movies_scores.shape)
-        movies_indices = []
         for i in range(movies_scores.shape[0]):
             sim_scores = list(enumerate(movies_scores[i]))
             sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
@@ -100,9 +101,9 @@ class ContentRecommender:
 
     def recommend(self, title, num):
         sim_titles = set()
+        sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_genre))
         sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_desc))
         sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_kwd))
         sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_dir_cast))
-        sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_genre))
         sim_titles = list(sim_titles)
         return sim_titles
