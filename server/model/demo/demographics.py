@@ -12,7 +12,7 @@ def weighted_rating(x, m, C):
 
 
 #  Convert the process into a function we can utilize later
-def demographic_movies(df, recent=False, genre='', percentile=0.9, years=10):
+def demographic_movies(df, gen_md, recent=False, genre='', percentile=0.9, years=10):
     # using a time range of the last 2 years
     if(recent == True):
         df['release_date'] = pd.to_datetime(df['release_date'])
@@ -51,8 +51,8 @@ def weighted_rating_genre(gen_md, genre, percentile=0.9):
     qualified['vote_count'] = qualified['vote_count'].astype('int')
     qualified['vote_average'] = qualified['vote_average'].astype('int')
     
-    qualified['weighted_rate'] = qualified.apply(lambda x: (x['vote_count']/(x['vote_count']+m) * x['vote_average']) + (m/(m+x['vote_count']) * C), axis=1)
-    qualified = qualified.sort_values('weighted_rate', ascending=False).head(250)
+    qualified['score'] = qualified.apply(lambda x: (x['vote_count']/(x['vote_count']+m) * x['vote_average']) + (m/(m+x['vote_count']) * C), axis=1)
+    qualified = qualified.sort_values('score', ascending=False).head(250)
     
     return qualified
 
@@ -66,3 +66,7 @@ def likeable_movies(df):
     likeable_movies['score'] = likeable_movies.apply(likeable_score, axis=1)
     likeable_movies = likeable_movies.sort_values('score', ascending=False)
     return likeable_movies
+
+def popular_movies(df):
+    pop = df.sort_values('popularity', ascending=False)
+    return pop
