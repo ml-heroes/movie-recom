@@ -8,14 +8,11 @@ from server.models.demo.demographics import (demographic_movies,
     likeable_movies,
     popular_movies)
 
-# data = process_data.df;
-# gen_md = process_data.gen_md;
-LIMIT = 15
+LIMIT = 10
 
 class DemographicService:
     def __init__(self, processed_data=None):
-        self.df = processed_data.df
-        self.gen_md = processed_data.gen_md
+        self.df = processed_data
 
     def trending(self):
         movies = demographic_movies(self.df)
@@ -30,5 +27,9 @@ class DemographicService:
         return movies.head(LIMIT)
 
     def trending_genre(self, genre):
-        movies = weighted_rating_genre(self.gen_md, genre)
+        movies = weighted_rating_genre(self.df, genre)
         return movies.head(LIMIT)
+
+    def find_movie_by_id(self, movie_id):
+        movie = self.data.iloc[movie_id]
+        return movie

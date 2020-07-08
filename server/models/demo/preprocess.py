@@ -13,7 +13,6 @@ def clean_numeric(x):
 class Process:
   def __init__(self, url):
     self.process_data(url)
-    self.process_genre()
 
   def process_data(self, url):
     df = pd.read_csv(url)
@@ -45,10 +44,10 @@ class Process:
 
     df['year'] = df['year'].replace('NaT', np.nan)
     df['year'] = df['year'].apply(clean_numeric)
-    self.df = df
 
-  def process_genre(self):
-    s = self.df.apply(lambda x: pd.Series(x['genres']),axis=1).stack().reset_index(level=1, drop=True)
-    s.name = 'genre'
-    gen_md = self.df.drop('genres', axis=1).join(s)
-    self.gen_md = gen_md
+    df['genres'] = df['genres'].fillna('[]').apply(ast.literal_eval).apply(lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
+    s = df.apply(lambda x: pd.Series(x['genres']),axis=1).stack().reset_index(level=1, drop=True)
+    s.name = 'genres'
+    df = df.drop('genres', axis=1).join(s)
+
+    self.df = df
