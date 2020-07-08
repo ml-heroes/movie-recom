@@ -32,6 +32,9 @@ class Process:
     def process_metadata(self, md):
         if md is None:
             return md
+        
+        base_poster_url = 'http://image.tmdb.org/t/p/w185/'
+
         # These three movies' records are corrupted
         md = md.drop([19730, 29503, 35587])
         md['id'] = md['id'].astype('int')

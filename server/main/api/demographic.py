@@ -13,7 +13,7 @@ large_base_path = 'https://dl.dropboxusercontent.com/s/toir5bjqhl463q4/'
 processed_data = Process(base_path, large_base_path)
 demographic_service = DemographicService(processed_data.metadata)
 
-@route.route("/api/movies/<movie_id>")
+@route.route("/api/movies/<int:movie_id>")
 def get_movie_detail(movie_id):
     return demographic_service.find_movie_by_id(movie_id).to_json(orient='records')
 
