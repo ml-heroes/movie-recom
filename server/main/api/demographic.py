@@ -14,15 +14,15 @@ processed_data = Process('https://raw.githubusercontent.com/ml-heroes/ml-dataset
 demographic_service = DemographicService(processed_data)
 print("===Loading data complete===")
 
-@route.route("/api/trendings")
+@route.route("/api/trending")
 def get_demographics():
     return demographic_service.trending().to_json(orient='records')
 
-@route.route("/api/populars")
+@route.route("/api/popular")
 def get_popular():
     return demographic_service.popular().to_json(orient='records')
 
-@route.route("/api/likeables")
+@route.route("/api/likeable")
 def get_likeable():
     return demographic_service.likeable().to_json(orient='records')
 

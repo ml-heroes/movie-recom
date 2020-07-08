@@ -1,18 +1,17 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import React, { Component } from "react";
+import axios from "axios";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-import TrendingMovies from './TrendingMovies';
-import NetflixOriginals from './NetflixOriginals';
-import TopRated from './TopRated';
-import ActionMovies from './ActionMovies';
-import ComedyMovies from './ComedyMovies';
-import Documentaries from './Documentaries';
-
+import TrendingMovies from "./TrendingMovies";
+import Popular from "./Popular";
+import Likeable from "./Likeable";
+import Recommend from "./Recommend";
+import ActionMovies from "./ActionMovies";
+import ComedyMovies from "./ComedyMovies";
+import Documentaries from "./Documentaries";
 
 class MainContent extends Component {
-
   state = {
     /** Will hold our chosen movie to display on the header */
     selectedMovie: {},
@@ -43,12 +42,13 @@ class MainContent extends Component {
       <div className="container">
         <Header movie={this.state.selectedMovie} />
         <div className="movieShowcase">
-          <NetflixOriginals />
           <TrendingMovies />
-          <TopRated />
+          <Recommend />
           <ActionMovies />
           <ComedyMovies />
           <Documentaries />
+          <Popular />
+          <Likeable />
         </div>
         <Footer />
       </div>
@@ -56,4 +56,4 @@ class MainContent extends Component {
   }
 }
 
-export default MainContent; 
+export default MainContent;

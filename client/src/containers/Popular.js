@@ -16,12 +16,12 @@ class TopRated extends Component {
     // Call getMoviesRows function only when we get the data back
     // from the API through redux
     if (this.props.topRated.data) {
-      const url = `/movie/top_rated?api_key=${process.env.API_KEY}&language=en-US`;
+      const url = `/popular`;
       movies = getMovieRows(this.props.topRated.data, url);
     }
     return (
       <>
-        <h1 className="movieShowcase__heading">Top Rated</h1>
+        <h1 className="movieShowcase__heading">POPULAR MOVIES</h1>
         <div className="movieShowcase__container">{movies}</div>
       </>
     );

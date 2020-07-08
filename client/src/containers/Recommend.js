@@ -2,26 +2,26 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
+import { fetchTopRated } from "../store/actions/index";
 import { getMovieRows } from "../getMovie";
-import { fetchRomanceMovies } from "../store/actions/index";
 
-class RomanceMovies extends Component {
+class TopRated extends Component {
   constructor(props) {
     super(props)
-    props.fetchRomanceMovies();
+    props.fetchTopRated();
   }
 
   render() {
     let movies;
     // Call getMoviesRows function only when we get the data back
     // from the API through redux
-    if (this.props.movies.data) {
-      const url = `/genres/Romance`;
-      movies = getMovieRows(this.props.movies.data, url);
+    if (this.props.topRated.data) {
+      const url = `/collabs/top/${1}`;
+      movies = getMovieRows(this.props.topRated.data, url);
     }
     return (
       <>
-        <h1 className="movieShowcase__heading">Romance Movies</h1>
+        <h1 className="movieShowcase__heading">OUR RECOMMENDATIONS FOR YOU</h1>
         <div className="movieShowcase__container">{movies}</div>
       </>
     );
@@ -29,11 +29,11 @@ class RomanceMovies extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { movies: state.romance };
+  return { topRated: state.topRated };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ fetchRomanceMovies }, dispatch);
+  return bindActionCreators({ fetchTopRated }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RomanceMovies);
+export default connect(mapStateToProps, mapDispatchToProps)(TopRated);
