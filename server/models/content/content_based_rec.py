@@ -8,8 +8,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
 
 class ContentRecommender:
-    def __init__(self, content_ds):
-        cds = content_ds.copy()
+    def __init__(self, metadata, links, keywords, credits):
+        cds = metadata[metadata['id'].isin(links)]
+        cds = cds.merge(credits, on='id')
+        cds = cds.merge(keywords, on='id')
         self.cos_sim_desc = self.create_cosine_sim_desc(cds)
         self.cos_sim_kwd = self.create_cosine_sim_kwd(cds)
         self.cos_sim_dir_cast = self.create_cosine_sim_dir_cast(cds)
