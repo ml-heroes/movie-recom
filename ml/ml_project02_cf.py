@@ -14,6 +14,7 @@ Original file is located at
 import pandas as pd 
 import numpy as np
 from collections import defaultdict
+import pickle
 
 from surprise import Reader, Dataset, SVD, accuracy
 from surprise.model_selection import cross_validate, GridSearchCV, train_test_split
@@ -118,6 +119,22 @@ Given a user and a movie
 
 algo.predict(2, 904)
 
+"""## Exporting"""
+
+# saving the top_n for all users
+pickle.dump(top_n, open("top_n.data", "wb"))
+
+# saving the model
+pickle.dump(algo, open("svd.data", "wb"))
+
+"""## Importing"""
+
+new_top_n = pickle.load(open("top_n.data", "rb"))
+new_top_n[1]
+
+new_algo = pickle.load(open("svd.data", "rb"))
+algo.predict(2, 904)
+
 """References:
 * https://surprise.readthedocs.io/en/stable/getting_started.html
 * https://www.kaggle.com/ibtesama/getting-started-with-a-movie-recommendation-system
@@ -126,4 +143,5 @@ algo.predict(2, 904)
 * https://www.kaggle.com/fabiendaniel/film-recommendation-engine
 * https://surprise.readthedocs.io/en/stable/FAQ.html
 * https://surprise.readthedocs.io/en/stable/matrix_factorization.html?highlight=svd#surprise.prediction_algorithms.matrix_factorization.SVD
+* https://wiki.python.org/moin/UsingPickle
 """
