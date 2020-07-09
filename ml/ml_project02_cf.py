@@ -19,10 +19,19 @@ import pickle
 from surprise import Reader, Dataset, SVD, accuracy
 from surprise.model_selection import cross_validate, GridSearchCV, train_test_split
 
+"""## Dataset"""
+
 ratings = pd.read_csv('/content/drive/My Drive/Colab_Notebooks/data/movies/ratings_small.csv')
 ratings.head()
 
-"""## Dataset"""
+print("Total number of records:", len(ratings))
+print("Number of unique users:", len(ratings.userId.unique()))
+print("Number of unique movies:", len(ratings.movieId.unique()))
+
+movies = pd.read_csv('/content/drive/My Drive/Colab_Notebooks/data/movies/movies_metadata.csv', low_memory=False)
+movies.head()
+
+"""## Prepare data for surprise"""
 
 reader = Reader()
 data = Dataset.load_from_df(ratings[['userId', 'movieId', 'rating']], reader)
@@ -111,6 +120,7 @@ Given a user
 top_n[1]
 
 top_n[2]
+# movie id, predicted rating
 
 """## Get predicted movie rating
 
@@ -118,6 +128,7 @@ Given a user and a movie
 """
 
 algo.predict(2, 904)
+# est is the predicted rating
 
 """## Exporting"""
 
@@ -135,6 +146,204 @@ new_top_n[1]
 new_algo = pickle.load(open("svd.data", "rb"))
 algo.predict(2, 904)
 
+"""## Additional work"""
+
+new_algo = pickle.load(open("/content/drive/My Drive/Colab_Notebooks/data/movies/mydata/svd.data", "rb"))
+
+new_algo.predict(1, 302)
+
+movies[movies['id'] == '302'].title
+
+ratings[ratings['movieId'] == 302]
+
+"""# Neural Netwrok
+
+## Main Module
+The steps in the model are as follows:
+1. Map user ID to a "user vector" via an embedding matrix
+1.  Map movie ID to a "movie vector" via an embedding matrix
+1. Compute the dot product between the user vector and movie vector, to obtain the a match score between the user and the movie (predicted rating).
+1. Train the embeddings via gradient descent using all known user-movie pairs.
+
+### Imports
+"""
+
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+from pathlib import Path
+import matplotlib.pyplot as plt
+
+"""### Dealing with Data"""
+
+df = pd.read_csv('/content/drive/My Drive/Colab_Notebooks/data/movies/ratings_small.csv')
+
+user_ids = df["userId"].unique().tolist()
+user2user_encoded = {x: i for i, x in enumerate(user_ids)}
+userencoded2user = {i: x for i, x in enumerate(user_ids)}
+movie_ids = df["movieId"].unique().tolist()
+movie2movie_encoded = {x: i for i, x in enumerate(movie_ids)}
+movie_encoded2movie = {i: x for i, x in enumerate(movie_ids)}
+df["user"] = df["userId"].map(user2user_encoded)
+df["movie"] = df["movieId"].map(movie2movie_encoded)
+
+num_users = len(user2user_encoded)
+num_movies = len(movie_encoded2movie)
+df["rating"] = df["rating"].values.astype(np.float32)
+# min and max ratings will be used to normalize the ratings later
+min_rating = min(df["rating"])
+max_rating = max(df["rating"])
+
+print(
+    "Number of users: {}, Number of Movies: {}, Min rating: {}, Max rating: {}".format(
+        num_users, num_movies, min_rating, max_rating
+    )
+)
+
+df = df.sample(frac=1, random_state=42)
+x = df[["user", "movie"]].values
+# Normalize the targets between 0 and 1. Makes it easy to train.
+y = df["rating"].apply(lambda x: (x - min_rating) / (max_rating - min_rating)).values
+# Assuming training on 90% of the data and validating on 10%.
+train_indices = int(0.9 * df.shape[0])
+x_train, x_val, y_train, y_val = (
+    x[:train_indices],
+    x[train_indices:],
+    y[:train_indices],
+    y[train_indices:],
+)
+
+"""### Define the NN model"""
+
+EMBEDDING_SIZE = 50
+
+class RecommenderNet(keras.Model):
+    def __init__(self, num_users, num_movies, embedding_size, **kwargs):
+        super(RecommenderNet, self).__init__(**kwargs)
+        self.num_users = num_users
+        self.num_movies = num_movies
+        self.embedding_size = embedding_size
+        self.user_embedding = layers.Embedding(
+            num_users,
+            embedding_size,
+            embeddings_initializer="he_normal",
+            embeddings_regularizer=keras.regularizers.l2(1e-6),
+        )
+        self.user_bias = layers.Embedding(num_users, 1)
+        self.movie_embedding = layers.Embedding(
+            num_movies,
+            embedding_size,
+            embeddings_initializer="he_normal",
+            embeddings_regularizer=keras.regularizers.l2(1e-6),
+        )
+        self.movie_bias = layers.Embedding(num_movies, 1)
+
+    def call(self, inputs):
+        user_vector = self.user_embedding(inputs[:, 0])
+        user_bias = self.user_bias(inputs[:, 0])
+        movie_vector = self.movie_embedding(inputs[:, 1])
+        movie_bias = self.movie_bias(inputs[:, 1])
+        dot_user_movie = tf.tensordot(user_vector, movie_vector, 2)
+        # Add all the components (including bias)
+        x = dot_user_movie + user_bias + movie_bias
+        # The sigmoid activation forces the rating to between 0 and 1
+        return tf.nn.sigmoid(x)
+
+model = RecommenderNet(num_users, num_movies, EMBEDDING_SIZE)
+model.compile(loss = tf.keras.losses.BinaryCrossentropy(), 
+              optimizer = keras.optimizers.Adam(lr = 0.001))
+
+"""### Train the model"""
+
+history = model.fit(x = x_train, 
+                    y = y_train,
+                    batch_size = 64, 
+                    epochs = 5, 
+                    verbose = 1,
+                    validation_data=(x_val, y_val))
+
+plt.plot(history.history["loss"])
+plt.plot(history.history["val_loss"])
+plt.title("model loss")
+plt.ylabel("loss")
+plt.xlabel("epoch")
+plt.legend(["train", "test"], loc="upper left")
+plt.show()
+
+"""### Making predictions"""
+
+user_id = 1
+movies_not_watched = [904]
+movies_not_watched = list(
+    set(movies_not_watched).intersection(set(movie2movie_encoded.keys()))
+)
+movies_not_watched = [[movie2movie_encoded.get(x)] for x in movies_not_watched]
+user_encoder = user2user_encoded.get(user_id)
+user_movie_array = np.hstack(
+    ([[user_encoder]] * len(movies_not_watched), movies_not_watched)
+)
+rating = model.predict(user_movie_array)
+r = rating[0][0]
+f = r * max_rating
+f
+
+"""## Another try"""
+
+n_latent_factors_user = 8
+n_latent_factors_movie = 10
+n_latent_factors_mf = 3         # Matrix Factorization
+dropout_factor = 0.2
+
+movie_input = keras.layers.Input(shape=[1],name='Movie')
+movie_embedding_mlp = keras.layers.Embedding(n_movies + 1, n_latent_factors_movie, name='Movie-Embedding-MLP')(movie_input)
+movie_vec_mlp = keras.layers.Flatten(name='FlattenMovies-MLP')(movie_embedding_mlp)
+movie_vec_mlp = keras.layers.Dropout(dropout_factor)(movie_vec_mlp)
+
+movie_embedding_mf = keras.layers.Embedding(n_movies + 1, n_latent_factors_mf, name='Movie-Embedding-MF')(movie_input)
+movie_vec_mf = keras.layers.Flatten(name='FlattenMovies-MF')(movie_embedding_mf)
+movie_vec_mf = keras.layers.Dropout(dropout_factor)(movie_vec_mf)
+
+
+user_input = keras.layers.Input(shape=[1],name='User')
+user_vec_mlp = keras.layers.Flatten(name='FlattenUsers-MLP')(keras.layers.Embedding(n_users + 1, n_latent_factors_user,name='User-Embedding-MLP')(user_input))
+user_vec_mlp = keras.layers.Dropout(0.2)(user_vec_mlp)
+
+user_vec_mf = keras.layers.Flatten(name='FlattenUsers-MF')(keras.layers.Embedding(n_users + 1, n_latent_factors_mf,name='User-Embedding-MF')(user_input))
+user_vec_mf = keras.layers.Dropout(0.2)(user_vec_mf)
+
+
+concat = keras.layers.merge([movie_vec_mlp, user_vec_mlp], mode='concat',name='Concat')
+concat_dropout = keras.layers.Dropout(0.2)(concat)
+dense = keras.layers.Dense(200,name='FullyConnected')(concat_dropout)
+dense_batch = keras.layers.BatchNormalization(name='Batch')(dense)
+dropout_1 = keras.layers.Dropout(0.2,name='Dropout-1')(dense_batch)
+dense_2 = keras.layers.Dense(100,name='FullyConnected-1')(dropout_1)
+dense_batch_2 = keras.layers.BatchNormalization(name='Batch-2')(dense_2)
+
+
+dropout_2 = keras.layers.Dropout(0.2,name='Dropout-2')(dense_batch_2)
+dense_3 = keras.layers.Dense(50,name='FullyConnected-2')(dropout_2)
+dense_4 = keras.layers.Dense(20,name='FullyConnected-3', activation='relu')(dense_3)
+
+pred_mf = keras.layers.merge([movie_vec_mf, user_vec_mf], mode='dot',name='Dot')
+
+
+pred_mlp = keras.layers.Dense(1, activation='relu',name='Activation')(dense_4)
+
+combine_mlp_mf = keras.layers.merge([pred_mf, pred_mlp], mode='concat',name='Concat-MF-MLP')
+result_combine = keras.layers.Dense(100,name='Combine-MF-MLP')(combine_mlp_mf)
+deep_combine = keras.layers.Dense(100,name='FullyConnected-4')(result_combine)
+
+
+result = keras.layers.Dense(1,name='Prediction')(deep_combine)
+
+
+model = keras.Model([user_input, movie_input], result)
+opt = keras.optimizers.Adam(lr =0.01)
+model.compile(optimizer='adam',loss= 'mean_absolute_error')
+
 """References:
 * https://surprise.readthedocs.io/en/stable/getting_started.html
 * https://www.kaggle.com/ibtesama/getting-started-with-a-movie-recommendation-system
@@ -144,4 +353,7 @@ algo.predict(2, 904)
 * https://surprise.readthedocs.io/en/stable/FAQ.html
 * https://surprise.readthedocs.io/en/stable/matrix_factorization.html?highlight=svd#surprise.prediction_algorithms.matrix_factorization.SVD
 * https://wiki.python.org/moin/UsingPickle
+* https://keras.io/examples/structured_data/collaborative_filtering_movielens/
+* https://colab.research.google.com/github/nipunbatra/blog/blob/master/_notebooks/2017-12-29-neural-collaborative-filtering.ipynb#scrollTo=AYejMFoinQad
+* https://towardsdatascience.com/paper-review-neural-collaborative-filtering-explanation-implementation-ea3e031b7f96
 """
