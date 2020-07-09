@@ -18,7 +18,7 @@ export default class MovieGenre extends Component {
 
    render() {
       let netflixUrl = false;
-      if (this.props.url === `/discover/tv?api_key=${process.env.API_KEY}&with_networks=213`) {
+      if (this.props.url === `/discover/tv?api_key=2085f970b90ca4a5b5047991206ede55&with_networks=213`) {
          netflixUrl = true;
       }
 

@@ -1,30 +1,23 @@
 import MovieGenre from './components/MovieGenre';
 import React from 'react';
+import axios from "axios";
 
 export function getMovieRows(movies, url) {
-  const movieRow = movies.map((movie) => {
-    let movieImageUrl =
-      'https://image.tmdb.org/t/p/w500/' + movie.backdrop_path;
-    if (
-      url === `/discover/tv?api_key=${process.env.API_KEY}&with_networks=213`
-    ) {
-      movieImageUrl =
-        'https://image.tmdb.org/t/p/original/' + movie.poster_path;
-    }
+  const movieRow = movies.map( async (movie) => {
+    const url = `https://api.themoviedb.org/3/movie/${movie.id}?api_key=2085f970b90ca4a5b5047991206ede55`
+    const movieD = await axios.get(url)
+    console.log(movieD)
+    let movieImageUrl ='https://image.tmdb.org/t/p/w500' + movieD.poster_path;
 
-    if (movie.poster_path && movie.backdrop_path !== null) {
-      const movieComponent = (
-        <MovieGenre
+      const movieComponent =
+      <MovieGenre
           key={movie.id}
           url={url}
           posterUrl={movieImageUrl}
           movie={movie}
         />
-      );
 
-      return movieComponent;
-    }
-    return null;
+    return  movieComponent;
   });
 
   return movieRow;

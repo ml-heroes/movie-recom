@@ -16,7 +16,7 @@ class TrendingMovies extends Component {
     // Call getMoviesRows function only when we get the data back
     // from the API through redux
     if (this.props.trending.data) {
-      const url = `/trending`;
+      const url = `/api/trending`;
       movies = getMovieRows(this.props.trending.data, url);
     }
     return (

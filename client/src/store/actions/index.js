@@ -12,7 +12,7 @@ export const FETCH_LIKEABLE = "FETCH_LIKEABLE";
 
 export function fetchTrending() {
   const request = axios.get(
-    `/trending`
+    `/api/trending`
   );
 
   return {
@@ -22,7 +22,7 @@ export function fetchTrending() {
 }
 
 export function fetchLikeable() {
-  const request = axios.get(`/likeable`);
+  const request = axios.get(`/api/likeable`);
 
   return {
     type: FETCH_LIKEABLE,
@@ -50,7 +50,7 @@ export async function fetchContentBased(title) {
 
 
 export function fetchTopRated() {
-  const request = axios.get(`/collabs/top/${1}`);
+  const request = axios.get(`/api/collabs/top/${1}`);
 
   return {
     type: FETCH_TOP_RATED,
@@ -59,7 +59,7 @@ export function fetchTopRated() {
 }
 
 export function fetchActionMovies() {
-  const request = axios.get(`/genres/Action`);
+  const request = axios.get(`/api/genres/Action`);
 
   return {
     type: FETCH_ACTION_MOVIES,
@@ -77,7 +77,7 @@ export function fetchComedyMovies() {
 }
 
 export function fetchHorrorMovies() {
-  const request = axios.get(`/genres/Horror`);
+  const request = axios.get(`/api/genres/Horror`);
 
   return {
     type: FETCH_HORROR_MOVIES,
@@ -86,7 +86,7 @@ export function fetchHorrorMovies() {
 }
 
 export function fetchRomanceMovies() {
-  const request = axios.get(`/genres/Romance`);
+  const request = axios.get(`/api/genres/Romance`);
 
   return {
     type: FETCH_ROMANCE_MOVIES,
@@ -95,7 +95,7 @@ export function fetchRomanceMovies() {
 }
 
 export function fetchDocumentaries() {
-  const request = axios.get(`/genres/Documentary`);
+  const request = axios.get(`/api/genres/Documentary`);
 
   return {
     type: FETCH_DOCUMENTARIES,
