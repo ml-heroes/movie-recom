@@ -38,9 +38,6 @@ componentDidUpdate = () => {
 
 
   getMovie = async () => {
-    // Movie Id for the Narcos series  */
-
-    let movieId = 63351;
     // Make Api call to retrieve the details for a single movie
     const userId = localStorage.getItem('userId') || 1;
     const res = await axios.get(`http://localhost/api/collabs/${userId}`)
