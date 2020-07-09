@@ -6,6 +6,7 @@
 """
 
 from flask import Flask
+from flask_cors import CORS
 
 from server.main.utils.common import register_blueprints
 from server.settings import config
@@ -16,6 +17,8 @@ def create_app(config_type, package_name, package_path):
     # app_settings = os.getenv('APP_DEV_SETTINGS')
     app_settings = config[config_type]
     app.config.from_object(app_settings)
+
+    CORS(app)
 
     # Access config variables as: app.config['DEBUG']
     # Register all api blueprints found in the application
