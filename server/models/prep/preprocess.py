@@ -9,9 +9,12 @@ from nltk.stem.snowball import SnowballStemmer
 
 class Process:
     def __init__(self, ds_path, big_ds_path, base_poster_url):
+        print("===Setting up data===")
         self.DS_PATH = ds_path
         self.BIG_DS_PATH = big_ds_path
+        print("===Downloading data===")
         credits, keywords, links, links_small, metadata, ratings, ratings_small = self.retrieve_datasets()
+        print("===Processing data===")
         self.credits = self.process_credits(credits)
         self.keywords = self.process_keywords(keywords)
         self.links = self.process_links(links)
@@ -32,6 +35,7 @@ class Process:
         return credits, keywords, links, links_small, metadata, ratings, ratings_small
 
     def process_metadata(self, md, base_poster_url):
+        print("===Processing metadata===")
         if md is None:
             return md
         
@@ -92,6 +96,7 @@ class Process:
         return np.nan
 
     def process_credits(self, crds):
+        print("===Processing credits===")
         if crds is None:
             return crds
         crds['id'] = crds['id'].astype('int')
@@ -116,6 +121,7 @@ class Process:
         return words
 
     def process_keywords(self, kwds):
+        print("===Processing keywords===")
         if kwds is None:
             return kwds
         kwds['id'] = kwds['id'].astype('int')
@@ -133,12 +139,14 @@ class Process:
         return kwds
 
     def process_links(self, lnks):
+        print("===Processing links===")
         if lnks is None:
             return lnks
         lnks = lnks[lnks['tmdbId'].notnull()]['tmdbId'].astype('int')
         return lnks
 
     def process_ratings(self, rts):
+        print("===Processing ratings===")
         if rts is None:
             return rts
         rts['movieId'] = rts['movieId'].astype('int')
