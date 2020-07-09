@@ -21,7 +21,7 @@ print('>>>> Loading datasets...')
 processed_data = Process(LOCAL_BASE_PATH, LOCAL_BASE_PATH, BASE_POSTER_URL)
 print('<<<< Finished loading datasets\n')
 print('>>>> Building demographic recommender...')
-demographic_rec = DemographicService(processed_data.metadata)
+demographic_rec = DemographicService(processed_data.metadata, processed_data.genre_metadata)
 print('<<<< Finished Building demographic recommender\n')
 print('>>>> Building content-based recommender...')
 content_rec = ContentRecommender(processed_data.metadata, processed_data.links_small,
@@ -50,7 +50,7 @@ def get_movie_detail(movie_id):
 
 @route.route("/api/trending")
 def get_demographics():
-    return demographic_rec.trending().to_json()
+    return demographic_rec.trending().to_json(orient='records')
 
 
 @route.route("/api/popular")

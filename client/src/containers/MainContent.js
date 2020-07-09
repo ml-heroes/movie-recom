@@ -25,7 +25,7 @@ class MainContent extends Component {
     /** Movie Id for the Narcos series  */
     const movieId = 63351;
     /** Make Api call to retrieve the details for a single movie  */
-    const url = `https://api.themoviedb.org/3/tv/${movieId}?api_key=${process.env.API_KEY}`;
+    const url = `https://api.themoviedb.org/3/tv/${movieId}?api_key=2085f970b90ca4a5b5047991206ede55`;
     axios
       .get(url)
       .then((res) => {

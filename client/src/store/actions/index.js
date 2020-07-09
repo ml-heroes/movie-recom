@@ -68,7 +68,7 @@ export function fetchActionMovies() {
 }
 
 export function fetchComedyMovies() {
-  const request = axios.get(`/genres/Comedy`);
+  const request = axios.get(`/api/genres/Comedy`);
 
   return {
     type: FETCH_COMEDY_MOVIES,

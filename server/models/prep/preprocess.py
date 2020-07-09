@@ -20,6 +20,7 @@ class Process:
         self.links = self.process_links(links)
         self.links_small = self.process_links(links_small)
         self.metadata = self.process_metadata(metadata, base_poster_url)
+        self.genre_metadata = self.process_genre_data(metadata)
         self.ratings = self.process_ratings(ratings)
         self.ratings_small = self.process_ratings(ratings_small)
 
@@ -79,18 +80,21 @@ class Process:
         md['year'] = md['year'].replace('NaT', np.nan)
         md['year'] = md['year'].apply(self.clean_numeric)
 
-        md['genres'] = md['genres'].fillna('[]').apply(ast.literal_eval).apply(
-            lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
-        s = md.apply(lambda x: pd.Series(x['genres']), axis=1).stack().reset_index(level=1, drop=True)
-        md['genres_vect'] = md['genres'].apply(lambda x: ' '.join(x))
-        s.name = 'genres'
-        md = md.drop('genres', axis=1).join(s)
-
         md['tagline'] = md['tagline'].fillna('')
         md['description'] = md['overview'] + md['tagline']
         md['description'] = md['description'].fillna('')
 
+        md['genres_vect'] = md['genres'].apply(lambda x: ' '.join(x))
+
         return md
+
+    def process_genre_data(self, df):
+        df['genres'] = df['genres'].fillna('[]').apply(ast.literal_eval).apply(
+            lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
+        s = df.apply(lambda x: pd.Series(x['genres']), axis=1).stack().reset_index(level=1, drop=True)
+        s.name = 'genres'
+        genre_df = df.drop('genres', axis=1).join(s)
+        return genre_df
 
     def get_director(self, x):
         for i in x:
