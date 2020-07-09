@@ -12,3 +12,4 @@ scikit-surprise
 scikit-learn
 nltk
 requests
+flask-cors
