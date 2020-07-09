@@ -3,7 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 import { getMovieRows } from "../getMovie";
-import { fetchNetflixOriginals, fetchContentBased } from "../store/actions/index";
+import { fetchLikeable, fetchContentBased } from "../store/actions/index";
 
 class NetflixOriginals extends Component {
   constructor(props) {

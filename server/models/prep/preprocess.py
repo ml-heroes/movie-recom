@@ -21,22 +21,26 @@ class Process:
         self.ratings_small = self.process_ratings(ratings_small)
 
     def retrieve_datasets(self):
+        print('>>>> Reading credits.csv...')
         credits = pd.read_csv(path.join(self.BIG_DS_PATH, 'credits.csv'))
+        print('>>>> Reading keywords.csv...')
         keywords = pd.read_csv(path.join(self.DS_PATH, 'keywords.csv'))
+        print('>>>> Reading links.csv...')
         links = pd.read_csv(path.join(self.DS_PATH, 'links.csv'))
+        print('>>>> Reading links_small.csv...')
         links_small = pd.read_csv(path.join(self.DS_PATH, 'links_small.csv'))
+        print('>>>> Reading movies_metadata.csv...')
         metadata = pd.read_csv(path.join(self.DS_PATH, 'movies_metadata.csv'))
         #ratings = pd.read_csv(path.join(LOCAL_DS_PATH, 'ratings.csv'))
         ratings = None
+        print('>>>> Reading ratings_small.csv...')
         ratings_small = pd.read_csv(path.join(self.DS_PATH, 'ratings_small.csv'))
         return credits, keywords, links, links_small, metadata, ratings, ratings_small
 
     def process_metadata(self, md, base_poster_url):
+        print('>>>> Preparing metadata...')
         if md is None:
             return md
-
-        base_poster_url = 'http://image.tmdb.org/t/p/w185/'
-
         # These three movies' records are corrupted
         md = md.drop([19730, 29503, 35587])
         md['id'] = md['id'].astype('int')
@@ -94,6 +98,7 @@ class Process:
     def process_credits(self, crds):
         if crds is None:
             return crds
+        print('>>>> Preparing credits...')
         crds['id'] = crds['id'].astype('int')
         crds['cast'] = crds['cast'].apply(literal_eval)
         crds['crew'] = crds['crew'].apply(literal_eval)
@@ -118,6 +123,7 @@ class Process:
     def process_keywords(self, kwds):
         if kwds is None:
             return kwds
+        print('>>>> Preparing keywords...')
         kwds['id'] = kwds['id'].astype('int')
         kwds['keywords'] = kwds['keywords'].apply(literal_eval)
         kwds['keywords'] = kwds['keywords'].apply(
@@ -135,12 +141,14 @@ class Process:
     def process_links(self, lnks):
         if lnks is None:
             return lnks
+        print('>>>> Preparing links...')
         lnks = lnks[lnks['tmdbId'].notnull()]['tmdbId'].astype('int')
         return lnks
 
     def process_ratings(self, rts):
         if rts is None:
             return rts
+        print('>>>> Preparing ratings...')
         rts['movieId'] = rts['movieId'].astype('int')
         return rts
 
