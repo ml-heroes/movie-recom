@@ -4,6 +4,9 @@ import { ReactComponent as PlayLogo } from '../static/images/play-button.svg';
 import { ReactComponent as AddLogo } from '../static/images/add.svg';
 
 export default function Header(props) {
+
+console.log("header ",props)
+
   const backgroundStyle = {
     backgroundSize: 'cover',
     backgroundImage: `url(https://image.tmdb.org/t/p/original/${props.movie.backdrop_path})`,

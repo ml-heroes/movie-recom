@@ -42,8 +42,8 @@ def get_top_n(user_id):
     top_n_ratings = top_n[user_id]
     results = []
     for i in range(len(top_n_ratings)):
-        mv_id = rts[i][0]
-        mv_rtng = rts[i][1]
+        mv_id = top_n_ratings[i][0]
+        mv_rtng = top_n_ratings[i][1]
         mv_dtls = movies_details_from_ids([mv_id])
         if len(mv_dtls) > 0:
             mv_dtls[0]['rating'] = mv_rtng
@@ -101,4 +101,4 @@ def movies_details_from_titles(titles):
 def content_based(title):
     mvs = content_rec.recommend(title, 20)
     results = movies_details_from_titles(mvs)
-    return results
+    return jsonify(results)

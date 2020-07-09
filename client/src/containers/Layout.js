@@ -87,21 +87,10 @@ class Layout extends Component {
   };
 
   contentBased = async (e) => {
-      const {data,status} = await axios.get(`/api/content/${this.state.title}`)
+      const {data,status} = await axios.get(`http://localhost/api/content/${this.state.title}`)
       console.log("searched clicked "+this.state.title+" and")
-      console.log(data)
-      const payload = []
-      if(status == 200 && data != null){
-        Object.keys(data).map((k,i)=>{
-          payload.push({
-            id: k,
-            ...data[k]
-          })
-        })
-      }
-      console.log(payload)
       const movieRows =[]
-      payload.map((movie) => {
+      data.map((movie) => {
         /** Manually build our image url and set it on the Movie component. */
         if (movie.poster_path !== null) {
           const movieImageUrl =
@@ -135,7 +124,7 @@ class Layout extends Component {
     /** Make the appropriate API call to get the details for a single movie or tv show. */
       const movieId = movie.id;
       url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=2085f970b90ca4a5b5047991206ede55`;
-    
+
     axios
       .get(url)
       .then((res) => {

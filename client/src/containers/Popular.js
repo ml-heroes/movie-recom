@@ -21,7 +21,7 @@ class Popular extends Component {
     }
     return (
       <>
-        <h1 className="movieShowcase__heading">POPULAR MOVIES</h1>
+        <h1 className="movieShowcase__heading">Popular</h1>
         <div className="movieShowcase__container">{movies}</div>
       </>
     );

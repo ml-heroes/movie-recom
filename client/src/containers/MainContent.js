@@ -3,6 +3,12 @@ import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+
+import { getMovieRows } from "../getMovie";
+import { fetchTopRated } from "../store/actions/index";
+
 import TrendingMovies from "./TrendingMovies";
 import Popular from "./Popular";
 import Likeable from "./Likeable";
@@ -14,50 +20,60 @@ import HorrorMovies from "./HorrorMovies";
 import RomanceMovies from "./RomanceMovies"
 
 class MainContent extends Component {
+
+
   state = {
     /** Will hold our chosen movie to display on the header */
     selectedMovie: {},
   };
 
-  componentDidMount = () => {
-    this.getMovie();
+  componentDidMount = async () => {
+    await this.getMovie();
+    //this.props.fetchTopRated();
   };
 
-  getMovie = () => {
-    /** Movie Id for the Narcos series  */
-    const movieId = 63351;
-    /** Make Api call to retrieve the details for a single movie  */
-    const url = `https://api.themoviedb.org/3/tv/${movieId}?api_key=2085f970b90ca4a5b5047991206ede55`;
-    axios
-      .get(url)
-      .then((res) => {
-        const movieData = res.data;
-        this.setState({ selectedMovie: movieData });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+componentDidUpdate = () => {
+
+}
+
+
+  getMovie = async () => {
+    // Movie Id for the Narcos series  */
+
+    let movieId = 63351;
+    // Make Api call to retrieve the details for a single movie
+    const url = `/api/collabs/1`;
+    const res = await axios.get('http://localhost/api/collabs/1')
+    console.log("pros mainContyen",res.data[0].id)
+    const postPath = await axios.get(`https://api.themoviedb.org/3/movie/${res.data[0].id}?api_key=2085f970b90ca4a5b5047991206ede55`)
+
+this.setState({selectedMovie: postPath.data})
+
   };
 
   render() {
+
     return (
       <div className="container">
         <Header movie={this.state.selectedMovie} />
         <div className="movieShowcase">
-          <TrendingMovies />
           <Recommend />
+          <TrendingMovies />
+          <Popular />
+          <Likeable />
           <ActionMovies />
           <ComedyMovies />
           <HorrorMovies />
           <RomanceMovies />
           <Documentaries />
-          <Popular />
-          <Likeable />
         </div>
         <Footer />
       </div>
     );
   }
+
+
 }
+
 
 export default MainContent;
