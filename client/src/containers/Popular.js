@@ -2,22 +2,22 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { fetchTopRated } from "../store/actions/index";
+import { fetchTopRated,fetchPopular } from "../store/actions/index";
 import { getMovieRows } from "../getMovie";
 
-class TopRated extends Component {
+class Popular extends Component {
   constructor(props) {
     super(props)
-    props.fetchTopRated();
+    props.fetchPopular();
   }
 
   render() {
     let movies;
     // Call getMoviesRows function only when we get the data back
     // from the API through redux
-    if (this.props.topRated.data) {
-      const url = `/popular`;
-      movies = getMovieRows(this.props.topRated.data, url);
+    if (this.props.popular.data) {
+      const url = `/api/popular`;
+      movies = getMovieRows(this.props.popular.data, url);
     }
     return (
       <>
@@ -29,11 +29,11 @@ class TopRated extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { topRated: state.topRated };
+  return { popular: state.popular };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ fetchTopRated }, dispatch);
+  return bindActionCreators({ fetchPopular }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TopRated);
+export default connect(mapStateToProps, mapDispatchToProps)(Popular);

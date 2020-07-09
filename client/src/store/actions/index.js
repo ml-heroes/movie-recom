@@ -21,6 +21,15 @@ export function fetchTrending() {
   };
 }
 
+export function fetchPopular() {
+  const request = axios.get(`/api/popular`);
+
+  return {
+    type: "FETCH_POPULAR",
+    payload: request,
+  };
+}
+
 export function fetchLikeable() {
   const request = axios.get(`/api/likeable`);
 

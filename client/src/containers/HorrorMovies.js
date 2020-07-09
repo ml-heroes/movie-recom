@@ -16,7 +16,7 @@ class HorrorMovies extends Component {
     // Call getMoviesRows function only when we get the data back
     // from the API through redux
     if (this.props.movies.data) {
-      const url = `/genres/Horror`;
+      const url = `/api/genres/Horror`;
       movies = getMovieRows(this.props.movies.data, url);
     }
     return (

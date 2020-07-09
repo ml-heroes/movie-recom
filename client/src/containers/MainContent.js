@@ -10,6 +10,8 @@ import Recommend from "./Recommend";
 import ActionMovies from "./ActionMovies";
 import ComedyMovies from "./ComedyMovies";
 import Documentaries from "./Documentaries";
+import HorrorMovies from "./HorrorMovies";
+import RomanceMovies from "./RomanceMovies"
 
 class MainContent extends Component {
   state = {
@@ -46,6 +48,8 @@ class MainContent extends Component {
           <Recommend />
           <ActionMovies />
           <ComedyMovies />
+          <HorrorMovies />
+          <RomanceMovies />
           <Documentaries />
           <Popular />
           <Likeable />

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { getMovieRows } from "../getMovie";
 import { fetchLikeable, fetchContentBased } from "../store/actions/index";
 
-class NetflixOriginals extends Component {
+class Likeable extends Component {
   constructor(props) {
     super(props);
     props.fetchLikeable();
@@ -15,13 +15,13 @@ class NetflixOriginals extends Component {
     let movies;
     // Call getMoviesRows function only when we get the data back
     // from the API through redux
-    if (this.props.movies.data) {
-      const url = `/likeable`;
-      movies = getMovieRows(this.props.movies.data, url);
+    if (this.props.likeable.data) {
+      const url = `/api/likeable`;
+      movies = getMovieRows(this.props.likeable.data, url);
     }
     return (
       <>
-        <h1 className="movieShowcase__heading">CONTENT BASED RECOMMENDATION</h1>
+        <h1 className="movieShowcase__heading">Movies you May Like</h1>
         <div className="movieShowcase__container">{movies}</div>
       </>
     );
@@ -29,11 +29,11 @@ class NetflixOriginals extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { movies: state.netflixOriginals };
+  return { likeable: state.likeable };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ fetchLikeable }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NetflixOriginals);
+export default connect(mapStateToProps, mapDispatchToProps)(Likeable);
