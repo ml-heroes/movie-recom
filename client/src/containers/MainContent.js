@@ -42,8 +42,8 @@ componentDidUpdate = () => {
 
     let movieId = 63351;
     // Make Api call to retrieve the details for a single movie
-    const url = `/api/collabs/1`;
-    const res = await axios.get('http://localhost/api/collabs/1')
+    const userId = localStorage.getItem('userId') || 1;
+    const res = await axios.get(`http://localhost/api/collabs/${userId}`)
     console.log("pros mainContyen",res.data[0].id)
     const postPath = await axios.get(`https://api.themoviedb.org/3/movie/${res.data[0].id}?api_key=2085f970b90ca4a5b5047991206ede55`)
 

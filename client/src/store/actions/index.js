@@ -52,7 +52,8 @@ export async function fetchContentBased(title) {
 
 
 export function fetchTopRated() {
-  const request = axios.get(`/api/collabs/${1}`);
+  const userId = localStorage.getItem('userId') || 1;
+  const request = axios.get(`/api/collabs/${userId}`);
 
   return {
     type: FETCH_TOP_RATED,
