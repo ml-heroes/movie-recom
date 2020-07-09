@@ -10,7 +10,7 @@ class ContentRecommender:
         cds = cds.merge(credits, on='id')
         cds = cds.merge(keywords, on='id')
         self.cos_sim_desc = self.create_cosine_sim_desc(cds)
-        self.cos_sim_kwd = self.create_cosine_sim_kwd(cds)
+        #self.cos_sim_kwd = self.create_cosine_sim_kwd(cds)
         self.cos_sim_dir_cast = self.create_cosine_sim_dir_cast(cds)
         self.cos_sim_genre = self.create_cosine_sim_genre(cds)
         cds = cds.reset_index()
@@ -57,7 +57,7 @@ class ContentRecommender:
     def recommend(self, title, num):
         sim_titles = set()
         sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_desc))
-        sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_kwd))
+        #sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_kwd))
         sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_genre))
         sim_titles.update(self.get_sim_mov_tiles(title, num, self.cos_sim_dir_cast))
         sim_titles = list(sim_titles)

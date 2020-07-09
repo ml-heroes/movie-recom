@@ -34,7 +34,7 @@ class Process:
     def process_metadata(self, md, base_poster_url):
         if md is None:
             return md
-        
+
         base_poster_url = 'http://image.tmdb.org/t/p/w185/'
 
         # These three movies' records are corrupted

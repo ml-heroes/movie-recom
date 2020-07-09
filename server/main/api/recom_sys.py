@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """User Route for Demo application."""
 
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 import pickle
 from flask import Blueprint, jsonify
 from server.main.services.demographic_service import DemographicService
@@ -20,12 +21,14 @@ content_rec = ContentRecommender(processed_data.metadata, processed_data.links_s
                                  processed_data.keywords, processed_data.credits)
 
 
-svd = pickle.load(open("server/models/collab/svd.data", "rb" ))
-top_n = pickle.load(open("server/models/collab/top_n.data", "rb" ))
+svd = pickle.load(open("server/models/collab/svd.data", "rb"))
+top_n = pickle.load(open("server/models/collab/top_n.data", "rb"))
+
 
 @route.route("/api/collabs/<int:user_id>/<int:movie_id>")
 def get_collaborative(user_id, movie_id):
     return jsonify(svd.predict(user_id, movie_id))
+
 
 @route.route("/api/collabs/<int:user_id>")
 def get_top_n(user_id):
