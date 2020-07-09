@@ -37,7 +37,9 @@ export default class Dropdown extends Component {
     return (
       <div className="dropdownContainer">
         <div className="navigation__container--userLogo">
-          <div className="dropdownContent">{items}</div>
+          <div className="dropdownContent">
+            {items}
+          </div>
           <div className="dropdownContent dropdownContent--2">
             <p className="dropdownContent-textOutside">Account</p>
             <p className="dropdownContent-textOutside">Help Center</p>
