@@ -50,7 +50,7 @@ def get_movie_detail(movie_id):
 
 @route.route("/api/trending")
 def get_demographics():
-    return demographic_rec.trending().to_json(orient='records')
+    return demographic_rec.trending().to_json()
 
 
 @route.route("/api/popular")
