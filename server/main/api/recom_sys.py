@@ -2,7 +2,6 @@
 """User Route for Demo application."""
 
 import requests
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 import pickle
 from flask import Blueprint, jsonify
 from server.main.services.demographic_service import DemographicService
@@ -40,7 +39,16 @@ def get_collaborative(user_id, movie_id):
 
 @route.route("/api/collabs/<int:user_id>")
 def get_top_n(user_id):
-    return jsonify(top_n[user_id])
+    top_n_ratings = top_n[user_id]
+    results = []
+    for i in range(len(top_n_ratings)):
+        mv_id = rts[i][0]
+        mv_rtng = rts[i][1]
+        mv_dtls = movies_details_from_ids([mv_id])
+        if len(mv_dtls) > 0:
+            mv_dtls[0]['rating'] = mv_rtng
+            results += mv_dtls
+    return jsonify(results)
 
 
 @route.route("/api/movies/<movie_id>")
@@ -68,17 +76,29 @@ def get_genres(genre):
     return demographic_rec.trending_genre(genre).to_json(orient='records')
 
 
+def movies_details_from_ids(ids):
+    rslts = []
+    for id in ids:
+        ttl_ovw = processed_data.metadata[processed_data.metadata['id'] == id][['title', 'overview']].values
+        if ttl_ovw.size > 0:
+            resp = requests.get(MOVIE_DB_URL.format(id))
+            resp_json = resp.json()
+            rslts.append({"id": id, "title": ttl_ovw[0][0],
+                          "poster_path": resp_json.get('poster_path'), "overview": ttl_ovw[0][1]})
+    return rslts
+
+
+def movies_details_from_titles(titles):
+    results = []
+    for title in titles:
+        ids = processed_data.metadata[processed_data.metadata['title'] == title]['id']
+        mvs_dtls = movies_details_from_ids(ids)
+        results += mvs_dtls
+    return results
+
+
 @route.route("/api/content/<title>")
 def content_based(title):
     mvs = content_rec.recommend(title, 20)
-    print('>>>> Movies recommended:')
-    print(mvs)
-    results = dict()
-    for mv in mvs:
-        mv_ids = processed_data.metadata[processed_data.metadata['title'] == mv]['id']
-        for mv_id in mv_ids:
-            mv_ovw = processed_data.metadata[processed_data.metadata['id'] == mv_id]['overview'].values[0]
-            resp = requests.get(MOVIE_DB_URL.format(mv_id))
-            resp_json = resp.json()
-            results[mv_id] = {"title": mv, "poster_path": resp_json.get('poster_path'), "overview": mv_ovw}
+    results = movies_details_from_titles(mvs)
     return results

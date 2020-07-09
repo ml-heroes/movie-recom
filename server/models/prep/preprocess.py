@@ -12,9 +12,7 @@ class Process:
         print("===Setting up data===")
         self.DS_PATH = ds_path
         self.BIG_DS_PATH = big_ds_path
-        print("===Downloading data===")
         credits, keywords, links, links_small, metadata, ratings, ratings_small = self.retrieve_datasets()
-        print("===Processing data===")
         self.credits = self.process_credits(credits)
         self.keywords = self.process_keywords(keywords)
         self.links = self.process_links(links)
@@ -23,6 +21,7 @@ class Process:
         self.genre_metadata = self.process_genre_data(metadata)
         self.ratings = self.process_ratings(ratings)
         self.ratings_small = self.process_ratings(ratings_small)
+        print("===Finished setting up data===")
 
     def retrieve_datasets(self):
         print('>>>> Reading credits.csv...')
@@ -103,7 +102,6 @@ class Process:
         return np.nan
 
     def process_credits(self, crds):
-        print("===Processing credits===")
         if crds is None:
             return crds
         print('>>>> Preparing credits...')
@@ -129,7 +127,6 @@ class Process:
         return words
 
     def process_keywords(self, kwds):
-        print("===Processing keywords===")
         if kwds is None:
             return kwds
         print('>>>> Preparing keywords...')
@@ -148,7 +145,6 @@ class Process:
         return kwds
 
     def process_links(self, lnks):
-        print("===Processing links===")
         if lnks is None:
             return lnks
         print('>>>> Preparing links...')
@@ -156,7 +152,6 @@ class Process:
         return lnks
 
     def process_ratings(self, rts):
-        print("===Processing ratings===")
         if rts is None:
             return rts
         print('>>>> Preparing ratings...')
