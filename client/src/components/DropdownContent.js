@@ -1,30 +1,50 @@
-import React from 'react';
+import React, { Component } from "react";
 
-const dropdownContent = () => (
-  <div className="dropdownContainer">
-    <div className="navigation__container--userLogo">
-      <div className="dropdownContent">
-        <div>
+export default class Dropdown extends Component {
+  handleUserClicked = (id) => {
+    localStorage.setItem("userId", id);
+    window.location.reload();
+  };
+
+  render() {
+    const users = [
+      {
+        text: "Clinton Yeboah",
+        id: 1,
+      },
+      {
+        text: "Hatem Hatem",
+        id: 2,
+      },
+      {
+        text: "Guethie Guethie",
+        id: 2,
+      },
+    ];
+
+    const items = [];
+
+    for (const [index, user] of users.entries()) {
+      items.push(
+        <div key={index} onClick={() => this.handleUserClicked(user.id)}>
           <div className="dropdownContent--user"></div>
-          <p className="dropdownContent--user-text">Andres</p>
+          <p className="dropdownContent--user-text" style={{ margin: 0 }}>
+            {user.text}
+          </p>
         </div>
-        <div>
-          <div className="dropdownContent--user dropdownContent--user-2"></div>
-          <p className="dropdownContent--user-text">Tony</p>
+      );
+    }
+    return (
+      <div className="dropdownContainer">
+        <div className="navigation__container--userLogo">
+          <div className="dropdownContent">{items}</div>
+          <div className="dropdownContent dropdownContent--2">
+            <p className="dropdownContent-textOutside">Account</p>
+            <p className="dropdownContent-textOutside">Help Center</p>
+            <p className="dropdownContent-textOutside">Sign out of Netflix</p>
+          </div>
         </div>
-        <div>
-          <div className="dropdownContent--user dropdownContent--user-3"></div>
-          <p className="dropdownContent--user-text">Luis</p>
-        </div>
-        <p className="dropdownContent-text">Manage Profiles</p>
       </div>
-      <div className="dropdownContent dropdownContent--2">
-        <p className="dropdownContent-textOutside">Account</p>
-        <p className="dropdownContent-textOutside">Help Center</p>
-        <p className="dropdownContent-textOutside">Sign out of Netflix</p>
-      </div>
-    </div>
-  </div>
-);
-
-export default dropdownContent;
+    );
+  }
+}
