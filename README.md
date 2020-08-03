@@ -93,4 +93,5 @@ This seed project is good for starting up with any Angular-Flask-Docker project,
 ## References
 
 Starter Project From: https://github.com/mrsan22/Angular-Flask-Docker-Skeleton
+
 UI Starter Project From: https://github.com/AndresXI/Netflix-Clone
