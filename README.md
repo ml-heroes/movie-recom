@@ -1,4 +1,3 @@
-# 
 [Colab Jupyter Notebook](https://colab.research.google.com/github/ml-heroes/movie-recom/blob/master/ml/movie-recom.ipynb)
 
 # Netflix-Like Movie Recommendation System
